@@ -54,7 +54,7 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="input-field"
-              placeholder="admin@zerotrust.com"
+              placeholder="you@example.com"
               required
             />
           </div>
@@ -102,11 +102,7 @@ export default function Login() {
             </Link>
           </p>
 
-          <div className="pt-4 border-t border-gray-800/50">
-            <p className="text-xs text-gray-600 text-center">
-              Demo: admin@zerotrust.com / Admin123!
-            </p>
-          </div>
+
         </form>
       </div>
     </div>
