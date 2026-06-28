@@ -1,22 +1,36 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends
-from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
+from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from app.core.config import settings
 from app.middleware.cors import setup_cors
 from app.middleware.rate_limit import rate_limit_middleware
-from app.database.session import engine, Base, SessionLocal
+from app.database.session import engine, Base
 from app.websocket_manager import ws_manager
 from app.seed_data import seed_database
 from app.core.security import decode_token
 import os
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    Base.metadata.create_all(bind=engine)
-    seed_database()
-    os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+    try:
+        Base.metadata.create_all(bind=engine)
+        logger.info("Database tables created")
+    except Exception as e:
+        logger.error(f"Database table creation failed: {e}")
+    try:
+        seed_database()
+        logger.info("Database seeded")
+    except Exception as e:
+        logger.error(f"Database seeding failed: {e}")
+    try:
+        os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+    except Exception as e:
+        logger.error(f"Upload dir creation failed: {e}")
     yield
 
 
@@ -29,9 +43,39 @@ app = FastAPI(
 
 setup_cors(app)
 
-app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])
+CORS_HEADERS = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "*",
+    "Access-Control-Allow-Headers": "*",
+}
 
-app.middleware("http")(rate_limit_middleware)
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Unhandled error: {exc}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error"},
+        headers=CORS_HEADERS,
+    )
+
+
+@app.middleware("http")
+async def cors_error_middleware(request: Request, call_next):
+    try:
+        response = await call_next(request)
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+        return response
+    except Exception as e:
+        logger.error(f"Request failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"detail": "Internal server error"},
+            headers=CORS_HEADERS,
+        )
+
 
 SECURE_HEADERS = {
     "X-Content-Type-Options": "nosniff",
@@ -43,7 +87,7 @@ SECURE_HEADERS = {
 
 
 @app.middleware("http")
-async def add_secure_headers(request, call_next):
+async def add_secure_headers(request: Request, call_next):
     response = await call_next(request)
     for header, value in SECURE_HEADERS.items():
         response.headers[header] = value
