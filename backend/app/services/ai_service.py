@@ -2,7 +2,6 @@ from typing import Optional
 from sqlalchemy.orm import Session
 from app.models.ai_conversation import AIConversation, AIConversationMessage
 from app.core.config import settings
-import json
 import httpx
 
 
@@ -64,6 +63,8 @@ class AIService:
     async def _call_ai_api(self, message: str, history: list) -> dict:
         if self.provider == "openai":
             return await self._call_openai(message, history)
+        if self.provider == "gemini" and self.api_key:
+            return await self._call_gemini(message, history)
         return self._fallback_response(message)
 
     async def _call_openai(self, message: str, history: list) -> dict:
@@ -99,6 +100,33 @@ class AIService:
                     "response": data["choices"][0]["message"]["content"],
                     "tokens_used": data.get("usage", {}).get("total_tokens"),
                 }
+        except Exception:
+            return self._fallback_response(message)
+
+    async def _call_gemini(self, message: str, history: list) -> dict:
+        parts = []
+        for msg in history[-10:]:
+            parts.append({"text": msg.content})
+        parts.append({"text": message})
+
+        system_instruction = "You are ZeroTrust AI, a cybersecurity expert assistant."
+
+        try:
+            async with httpx.AsyncClient(timeout=60.0) as client:
+                resp = await client.post(
+                    f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={self.api_key}",
+                    headers={"Content-Type": "application/json"},
+                    json={
+                        "system_instruction": {"parts": [{"text": system_instruction}]},
+                        "contents": [{"parts": parts}],
+                    },
+                )
+                data = resp.json()
+                candidates = data.get("candidates", [])
+                if candidates:
+                    text = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+                    return {"response": text, "tokens_used": None}
+                return self._fallback_response(message)
         except Exception:
             return self._fallback_response(message)
 
