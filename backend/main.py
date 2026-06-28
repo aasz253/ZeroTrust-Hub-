@@ -123,6 +123,31 @@ app.include_router(audit_router_mod.router)
 app.include_router(apikey_router_mod.router)
 
 
+@app.post("/api/debug/fix-admin")
+def fix_admin():
+    from app.database.session import SessionLocal
+    from app.models.role import Role
+    from app.models.user import User
+    db = SessionLocal()
+    try:
+        admin_role = db.query(Role).filter(Role.name == "admin").first()
+        if not admin_role:
+            admin_role = Role(name="admin", description="Administrator")
+            db.add(admin_role)
+            db.flush()
+        admin_user = db.query(User).filter(User.email == "admin@zerotrust.com").first()
+        if admin_user:
+            admin_user.role_id = admin_role.id
+            db.commit()
+            return {"detail": "Admin role assigned to admin@zerotrust.com"}
+        return {"detail": "Admin user not found"}
+    except Exception as e:
+        db.rollback()
+        return {"error": str(e)}
+    finally:
+        db.close()
+
+
 @app.get("/api/health")
 def health_check():
     return {"status": "healthy", "version": settings.VERSION, "app": settings.APP_NAME}
