@@ -94,7 +94,7 @@ export const cves = {
 export const scans = {
   create: (data: { target: string; scan_type: string }) =>
     api.post<Scan>('/scans', data).then(r => r.data),
-  list: (params?: { page?: number }) =>
+  list: (params?: { page?: number; page_size?: number }) =>
     api.get<PaginatedResponse<Scan>>('/scans', { params }).then(r => r.data),
   get: (id: number) => api.get<Scan>(`/scans/${id}`).then(r => r.data),
 };
