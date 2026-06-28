@@ -198,6 +198,9 @@ export interface NetworkStats {
   suspicious_count: number;
   open_ports_total: number;
   risk_score_avg: number;
+  wifi_ssid: string | null;
+  gateway_ip: string | null;
+  interface_name: string | null;
 }
 
 export type Severity = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' | 'INFO';

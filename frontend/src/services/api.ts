@@ -160,7 +160,7 @@ export const network = {
   devices: (params?: { page?: number; status?: string }) =>
     api.get<PaginatedResponse<Device>>('/network/devices', { params }).then(r => r.data),
   stats: () =>
-    api.get<NetworkStats>('/network/stats').then(r => r.data),
+    api.get<NetworkStats>('/network/info').then(r => r.data),
 };
 
 // Audit Logs (admin)
