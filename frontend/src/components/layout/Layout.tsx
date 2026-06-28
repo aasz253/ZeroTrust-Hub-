@@ -4,7 +4,8 @@ import Header from './Header';
 
 export default function Layout() {
   return (
-    <div className="min-h-screen bg-cyber-bg">
+    <div className="min-h-screen bg-cyber-bg hex-grid">
+      <div className="scanline-overlay" />
       <Sidebar />
       <Header />
       <main className="ml-64 pt-16 min-h-screen">

@@ -5,31 +5,157 @@
 @layer base {
   body {
     @apply bg-cyber-bg text-gray-100 font-['Inter'] antialiased;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(0, 245, 255, 0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(124, 58, 237, 0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(0, 245, 255, 0.02) 0%, transparent 50%);
   }
 }
 
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes matrix-rain {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 0% 100%; }
+}
+
+@keyframes data-stream {
+  0% { transform: translateX(-100%); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes hex-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes border-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 @layer components {
+  .scanline-overlay::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(0, 245, 255, 0.08);
+    z-index: 9999;
+    pointer-events: none;
+    animation: scanline 4s linear infinite;
+  }
+
+  .hex-grid {
+    background-image:
+      linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
   .glass {
     @apply bg-cyber-card/80 backdrop-blur-xl border border-gray-800/50 rounded-2xl;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glass::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(0, 245, 255, 0.1), transparent 40%, transparent 60%, rgba(124, 58, 237, 0.1));
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .glass:hover::before {
+    opacity: 1;
   }
 
   .glass-hover {
-    @apply hover:bg-cyber-card/90 hover:border-gray-700/50 transition-all duration-300;
+    @apply hover:bg-cyber-card/90 transition-all duration-300;
   }
 
   .card-gradient {
-    background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(17, 24, 39, 0.6));
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(17, 24, 39, 0.7));
     backdrop-filter: blur(20px);
     @apply border border-gray-800/50 rounded-2xl;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-gradient::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.2), transparent);
   }
 
   .neon-border {
-    box-shadow: 0 0 15px rgba(0, 245, 255, 0.1), inset 0 0 15px rgba(0, 245, 255, 0.05);
+    box-shadow:
+      0 0 15px rgba(0, 245, 255, 0.08),
+      inset 0 0 15px rgba(0, 245, 255, 0.03);
     @apply border border-cyber-accent/20;
+    transition: all 0.3s;
+  }
+
+  .neon-border:hover {
+    box-shadow:
+      0 0 25px rgba(0, 245, 255, 0.15),
+      inset 0 0 25px rgba(0, 245, 255, 0.05);
+    @apply border-cyber-accent/40;
   }
 
   .neon-glow {
-    box-shadow: 0 0 20px rgba(0, 245, 255, 0.2), 0 0 40px rgba(0, 245, 255, 0.1);
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.15), 0 0 40px rgba(0, 245, 255, 0.05);
+  }
+
+  .neon-text {
+    text-shadow: 0 0 10px rgba(0, 245, 255, 0.5), 0 0 20px rgba(0, 245, 255, 0.3);
+  }
+
+  .glitch-text:hover {
+    animation: glitch 0.3s ease-in-out 2;
   }
 
   .gradient-border {
@@ -44,21 +170,58 @@
     left: -1px;
     right: -1px;
     bottom: -1px;
-    border-radius: 1rem;
+    border-radius: inherit;
     background: linear-gradient(135deg, rgba(0, 245, 255, 0.3), rgba(124, 58, 237, 0.3));
     z-index: -1;
     opacity: 0.5;
+    animation: border-flow 3s ease infinite;
+    background-size: 200% 200%;
   }
 
   .btn-primary {
     @apply px-6 py-2.5 bg-cyber-accent/20 text-cyber-accent border border-cyber-accent/30 rounded-xl
     hover:bg-cyber-accent/30 hover:shadow-lg hover:shadow-cyber-accent/10 transition-all duration-300
-    font-medium;
+    font-medium relative overflow-hidden;
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(0, 245, 255, 0.05), transparent);
+    transform: rotate(45deg);
+    transition: all 0.5s;
+    opacity: 0;
+  }
+
+  .btn-primary:hover::after {
+    opacity: 1;
+    transform: rotate(45deg) translate(10%, 10%);
   }
 
   .btn-secondary {
     @apply px-6 py-2.5 bg-cyber-secondary/20 text-cyber-secondary border border-cyber-secondary/30 rounded-xl
-    hover:bg-cyber-secondary/30 transition-all duration-300 font-medium;
+    hover:bg-cyber-secondary/30 transition-all duration-300 font-medium relative overflow-hidden;
+  }
+
+  .btn-secondary::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(124, 58, 237, 0.05), transparent);
+    transform: rotate(45deg);
+    transition: all 0.5s;
+    opacity: 0;
+  }
+
+  .btn-secondary:hover::after {
+    opacity: 1;
   }
 
   .input-field {
@@ -69,6 +232,12 @@
 
   .stat-card {
     @apply relative overflow-hidden card-gradient p-6;
+    transition: all 0.3s;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 245, 255, 0.08);
   }
 
   .stat-card::after {
@@ -80,16 +249,63 @@
     height: 2px;
     background: linear-gradient(90deg, transparent, var(--accent, #00F5FF), transparent);
     opacity: 0.5;
+    animation: pulse-glow 2s ease-in-out infinite;
   }
 
-  .severity-critical { @apply text-red-400 bg-red-500/10 border border-red-500/20; }
-  .severity-high { @apply text-orange-400 bg-orange-500/10 border border-orange-500/20; }
-  .severity-medium { @apply text-yellow-400 bg-yellow-500/10 border border-yellow-500/20; }
-  .severity-low { @apply text-green-400 bg-green-500/10 border border-green-500/20; }
+  .data-stream {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .data-stream::after {
+    content: '01001010 01101000 01110101 01100010';
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    color: rgba(0, 245, 255, 0.03);
+    white-space: nowrap;
+    animation: data-stream 8s linear infinite;
+    pointer-events: none;
+  }
+
+  .severity-critical {
+    @apply text-red-400 bg-red-500/10 border border-red-500/20;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.1);
+  }
+
+  .severity-high {
+    @apply text-orange-400 bg-orange-500/10 border border-orange-500/20;
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.1);
+  }
+
+  .severity-medium {
+    @apply text-yellow-400 bg-yellow-500/10 border border-yellow-500/20;
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.1);
+  }
+
+  .severity-low {
+    @apply text-green-400 bg-green-500/10 border border-green-500/20;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.1);
+  }
+
+  .typing-effect {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    animation: typing 2s steps(30) 1s forwards;
+    width: 0;
+  }
+
+  .typing-effect::after {
+    content: '|';
+    animation: blink 1s step-end infinite;
+  }
 
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: rgba(0, 245, 255, 0.2) transparent;
+    scrollbar-color: rgba(0, 245, 255, 0.15) transparent;
   }
 
   .scrollbar-thin::-webkit-scrollbar {
@@ -101,7 +317,18 @@
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: rgba(0, 245, 255, 0.2);
+    background: rgba(0, 245, 255, 0.15);
     border-radius: 2px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 245, 255, 0.3);
+  }
+
+  .cyber-grid {
+    background-image:
+      linear-gradient(rgba(0, 245, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 245, 255, 0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
   }
 }

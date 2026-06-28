@@ -38,8 +38,13 @@ export default function Dashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-white">Security Dashboard</h1>
-        <p className="text-gray-500 mt-1">Real-time security overview and threat monitoring</p>
+        <h1 className="text-2xl font-bold text-white glitch-text">
+          <span className="text-cyber-accent neon-text">$</span> Security Dashboard
+        </h1>
+        <p className="text-gray-500 mt-1 font-mono text-sm">
+          <span className="text-cyber-accent">~$</span> Real-time security overview and threat monitoring
+          <span className="animate-pulse ml-1 text-cyber-accent">_</span>
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
