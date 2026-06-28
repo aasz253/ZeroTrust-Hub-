@@ -22,4 +22,4 @@ class HoneypotEvent(Base):
     attack_type = Column(String(100))
     severity = Column(String(20), default="MEDIUM")
     timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    metadata = Column(JSON, default=dict)
+    extra_data = Column(JSON, default=dict)

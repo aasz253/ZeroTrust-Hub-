@@ -15,7 +15,7 @@ class MaliciousDomain(Base):
     is_active = Column(Boolean, default=True)
     first_seen = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     last_seen = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    metadata = Column(JSON, default=dict)
+    extra_data = Column(JSON, default=dict)
 
 
 class DNSQuery(Base):

@@ -23,4 +23,4 @@ class VulnPriority(Base):
     description = Column(Text)
     recommendations = Column(JSON)
     last_updated = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    metadata = Column(JSON, default=dict)
+    extra_data = Column(JSON, default=dict)

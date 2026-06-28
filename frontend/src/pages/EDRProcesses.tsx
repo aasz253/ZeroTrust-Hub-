@@ -148,7 +148,7 @@ export default function EDRProcesses() {
           <div className="grid grid-cols-2 gap-4">
             <div><span className="text-xs text-gray-500">Executable</span><p className="text-sm text-gray-200 font-mono">{selected.exe || '-'}</p></div>
             <div><span className="text-xs text-gray-500">User</span><p className="text-sm text-gray-200">{selected.username || '-'}</p></div>
-            <div><span className="text-xs text-gray-500">CPU Usage</span><p className={`text-sm font-mono ${selected.cpu_percent > 50 ? 'text-cyber-danger' : 'text-gray-200'}'>{selected.cpu_percent?.toFixed(1)}%</p></div>
+            <div><span className="text-xs text-gray-500">CPU Usage</span><p className={`text-sm font-mono ${selected.cpu_percent > 50 ? 'text-cyber-danger' : 'text-gray-200'}`}>{selected.cpu_percent?.toFixed(1)}%</p></div>
             <div><span className="text-xs text-gray-500">Memory Usage</span><p className={`text-sm font-mono ${selected.memory_percent > 20 ? 'text-cyber-danger' : 'text-gray-200'}`}>{selected.memory_percent?.toFixed(1)}%</p></div>
           </div>
           <div><span className="text-xs text-gray-500">Command Line</span><p className="text-sm text-gray-200 font-mono break-all">{selected.cmdline || '-'}</p></div>

@@ -33,4 +33,4 @@ class SSLCertificate(Base):
     next_check = Column(DateTime)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    metadata = Column(JSON, default=dict)
+    extra_data = Column(JSON, default=dict)

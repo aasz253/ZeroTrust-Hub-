@@ -45,4 +45,4 @@ class FirewallRule(Base):
     created_by = Column(Integer)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    metadata = Column(JSON, default=dict)
+    extra_data = Column(JSON, default=dict)

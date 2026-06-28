@@ -88,7 +88,7 @@ def get_event(
         "attack_type": event.attack_type,
         "severity": event.severity,
         "timestamp": event.timestamp.isoformat() if event.timestamp else None,
-        "metadata": event.metadata,
+        "extra_data": event.extra_data,
     }
 
 
