@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Shield, Activity, Search, AlertTriangle, Bug, Key, MessageSquare, FileText, Bell, Settings, Users, LayoutDashboard, Radio, FileSearch, Wifi, X, Lock, Terminal, Cpu, Puzzle, FileCheck } from 'lucide-react';
+import { Shield, Activity, Search, AlertTriangle, Bug, Key, MessageSquare, FileText, Bell, Settings, Users, LayoutDashboard, Radio, FileSearch, Wifi, X, Lock, Terminal, Cpu, Puzzle, FileCheck, FlaskConical, Ban, Globe2, CheckCircle, WifiOff, Target } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { useUIStore } from '../../store/uiStore';
 
@@ -20,6 +20,12 @@ const navItems = [
   { to: '/dashboard/edr', icon: Cpu, label: 'EDR Monitor' },
   { to: '/dashboard/soar', icon: Puzzle, label: 'SOAR Playbooks' },
   { to: '/dashboard/fim', icon: FileCheck, label: 'File Monitor' },
+  { to: '/dashboard/honeypot', icon: FlaskConical, label: 'Honeypot' },
+  { to: '/dashboard/firewall', icon: Shield, label: 'Firewall' },
+  { to: '/dashboard/geoip', icon: Globe2, label: 'Geo-IP Blocking' },
+  { to: '/dashboard/ssl-monitor', icon: CheckCircle, label: 'SSL Monitor' },
+  { to: '/dashboard/dns-security', icon: WifiOff, label: 'DNS Security' },
+  { to: '/dashboard/vuln-priority', icon: Target, label: 'Vuln Priority' },
 ];
 
 const adminItems = [

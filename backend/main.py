@@ -83,6 +83,12 @@ from app.routers import siem as siem_router_mod
 from app.routers import edr as edr_router_mod
 from app.routers import soar as soar_router_mod
 from app.routers import fim as fim_router_mod
+from app.routers import honeypot as honeypot_router_mod
+from app.routers import firewall as firewall_router_mod
+from app.routers import geoip as geoip_router_mod
+from app.routers import ssl_monitor as ssl_router_mod
+from app.routers import dns_security as dns_router_mod
+from app.routers import vuln_prioritization as vuln_priority_router_mod
 
 app.include_router(auth_router_mod.router)
 app.include_router(mfa_router_mod.router)
@@ -92,6 +98,12 @@ app.include_router(siem_router_mod.router)
 app.include_router(edr_router_mod.router)
 app.include_router(soar_router_mod.router)
 app.include_router(fim_router_mod.router)
+app.include_router(honeypot_router_mod.router)
+app.include_router(firewall_router_mod.router)
+app.include_router(geoip_router_mod.router)
+app.include_router(ssl_router_mod.router)
+app.include_router(dns_router_mod.router)
+app.include_router(vuln_priority_router_mod.router)
 app.include_router(user_router_mod.router)
 app.include_router(dash_router_mod.router)
 app.include_router(vuln_router_mod.router)

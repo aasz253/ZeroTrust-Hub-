@@ -31,6 +31,12 @@ import SIEMLogs from './pages/SIEMLogs';
 import EDRProcesses from './pages/EDRProcesses';
 import SOARPlaybooks from './pages/SOARPlaybooks';
 import FIMMonitor from './pages/FIMMonitor';
+import Honeypot from './pages/Honeypot';
+import FirewallManager from './pages/FirewallManager';
+import GeoIPBlocking from './pages/GeoIPBlocking';
+import SSLMonitor from './pages/SSLMonitor';
+import DNSSecurity from './pages/DNSSecurity';
+import VulnerabilityPrioritization from './pages/VulnerabilityPrioritization';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
@@ -84,6 +90,12 @@ function AppContent() {
         <Route path="edr" element={<EDRProcesses />} />
         <Route path="soar" element={<SOARPlaybooks />} />
         <Route path="fim" element={<FIMMonitor />} />
+        <Route path="honeypot" element={<Honeypot />} />
+        <Route path="firewall" element={<FirewallManager />} />
+        <Route path="geoip" element={<GeoIPBlocking />} />
+        <Route path="ssl-monitor" element={<SSLMonitor />} />
+        <Route path="dns-security" element={<DNSSecurity />} />
+        <Route path="vuln-priority" element={<VulnerabilityPrioritization />} />
 
         <Route path="admin/users" element={<ProtectedRoute requiredRole="admin"><UserManagement /></ProtectedRoute>} />
         <Route path="admin/audit-logs" element={<ProtectedRoute requiredRole="admin"><AuditLogs /></ProtectedRoute>} />

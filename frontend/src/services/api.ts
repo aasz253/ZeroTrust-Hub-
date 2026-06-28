@@ -215,4 +215,66 @@ export const fim = {
   stats: () => api.get('/fim/stats').then(r => r.data),
 };
 
+// Honeypot
+export const honeypot = {
+  events: (params?: any) => api.get('/honeypot/events', { params }).then(r => r.data),
+  get: (id: number) => api.get(`/honeypot/events/${id}`).then(r => r.data),
+  start: () => api.post('/honeypot/start').then(r => r.data),
+  stop: () => api.post('/honeypot/stop').then(r => r.data),
+  status: () => api.get('/honeypot/status').then(r => r.data),
+  stats: () => api.get('/honeypot/stats').then(r => r.data),
+};
+
+// Firewall
+export const firewall = {
+  rules: (params?: any) => api.get('/firewall/rules', { params }).then(r => r.data),
+  create: (data: any) => api.post('/firewall/rules', data).then(r => r.data),
+  deleteRule: (id: number) => api.delete(`/firewall/rules/${id}`).then(r => r.data),
+  toggle: (id: number) => api.post(`/firewall/rules/${id}/toggle`).then(r => r.data),
+  sync: () => api.post('/firewall/sync').then(r => r.data),
+  status: () => api.get('/firewall/status').then(r => r.data),
+};
+
+// GeoIP
+export const geoip = {
+  rules: () => api.get('/geoip/rules').then(r => r.data),
+  create: (data: any) => api.post('/geoip/rules', data).then(r => r.data),
+  deleteRule: (id: number) => api.delete(`/geoip/rules/${id}`).then(r => r.data),
+  toggle: (id: number) => api.post(`/geoip/rules/${id}/toggle`).then(r => r.data),
+  lookup: (ip: string) => api.get('/geoip/lookup', { params: { ip } }).then(r => r.data),
+  hits: (params?: any) => api.get('/geoip/hits', { params }).then(r => r.data),
+  stats: () => api.get('/geoip/stats').then(r => r.data),
+};
+
+// SSL/TLS Monitor
+export const ssl = {
+  certificates: (params?: any) => api.get('/ssl/certificates', { params }).then(r => r.data),
+  scan: (domain: string, port?: number) => api.post('/ssl/scan', { domain, port }).then(r => r.data),
+  scanAll: () => api.post('/ssl/scan-all').then(r => r.data),
+  deleteCert: (id: number) => api.delete(`/ssl/certificates/${id}`).then(r => r.data),
+  stats: () => api.get('/ssl/stats').then(r => r.data),
+};
+
+// DNS Security
+export const dns = {
+  domains: (params?: any) => api.get('/dns/domains', { params }).then(r => r.data),
+  addDomain: (data: any) => api.post('/dns/domains', data).then(r => r.data),
+  toggleDomain: (id: number) => api.post(`/dns/domains/${id}/toggle`).then(r => r.data),
+  deleteDomain: (id: number) => api.delete(`/dns/domains/${id}`).then(r => r.data),
+  check: (domain: string) => api.post('/dns/check', null, { params: { domain } }).then(r => r.data),
+  blockerRules: () => api.get('/dns/blocker-rules').then(r => r.data),
+  createBlockerRule: (data: any) => api.post('/dns/blocker-rules', data).then(r => r.data),
+  deleteBlockerRule: (id: number) => api.delete(`/dns/blocker-rules/${id}`).then(r => r.data),
+  queries: (params?: any) => api.get('/dns/queries', { params }).then(r => r.data),
+  stats: () => api.get('/dns/stats').then(r => r.data),
+};
+
+// Vulnerability Prioritization
+export const vulnPriority = {
+  scored: (params?: any) => api.get('/vuln-priority/scored', { params }).then(r => r.data),
+  score: (cve_id: string, params?: any) => api.post(`/vuln-priority/score/${cve_id}`, null, { params }).then(r => r.data),
+  batchScore: () => api.post('/vuln-priority/batch-score').then(r => r.data),
+  stats: () => api.get('/vuln-priority/stats').then(r => r.data),
+};
+
 export default api;

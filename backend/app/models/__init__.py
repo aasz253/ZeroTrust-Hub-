@@ -16,6 +16,12 @@ from app.models.siem import SiemLog
 from app.models.edr import EdrProcess
 from app.models.soar import Playbook, PlaybookAction, PlaybookExecution
 from app.models.fim import FimEntry
+from app.models.honeypot import HoneypotEvent
+from app.models.firewall import FirewallRule
+from app.models.geoip import GeoIPRule, GeoIPCache, GeoIPHit
+from app.models.ssl_monitor import SSLCertificate
+from app.models.dns_security import MaliciousDomain, DNSQuery, DNSBlockerRule
+from app.models.vuln_prioritization import VulnPriority
 
 __all__ = [
     "User",
@@ -40,4 +46,14 @@ __all__ = [
     "PlaybookAction",
     "PlaybookExecution",
     "FimEntry",
+    "HoneypotEvent",
+    "FirewallRule",
+    "GeoIPRule",
+    "GeoIPCache",
+    "GeoIPHit",
+    "SSLCertificate",
+    "MaliciousDomain",
+    "DNSQuery",
+    "DNSBlockerRule",
+    "VulnPriority",
 ]
