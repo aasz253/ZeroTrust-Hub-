@@ -16,6 +16,7 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     is_mfa_enabled = Column(Boolean, default=False)
     mfa_secret = Column(String(255))
+    mfa_recovery_codes = Column(JSON)
     role_id = Column(Integer, ForeignKey("roles.id"), nullable=False)
     last_login = Column(DateTime)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

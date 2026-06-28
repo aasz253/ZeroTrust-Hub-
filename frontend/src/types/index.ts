@@ -203,4 +203,69 @@ export interface NetworkStats {
   interface_name: string | null;
 }
 
+export interface SiemLog {
+  id: number;
+  timestamp: string;
+  source_ip: string | null;
+  hostname: string | null;
+  facility: string | null;
+  severity: string | null;
+  program: string | null;
+  message: string;
+  raw: string;
+  tags: string[];
+}
+
+export interface EdrProcess {
+  pid: number;
+  name: string;
+  exe: string | null;
+  cmdline: string;
+  username: string | null;
+  cpu_percent: number;
+  memory_percent: number;
+  connections: any[];
+  is_suspicious: boolean;
+  anomaly_reason: string | null;
+}
+
+export interface Playbook {
+  id: number;
+  name: string;
+  description: string;
+  trigger_type: string;
+  trigger_config: any;
+  is_active: boolean;
+  auto_run: boolean;
+  actions_count: number;
+  created_at: string;
+}
+
+export interface PlaybookExecution {
+  id: number;
+  playbook_id: number;
+  triggered_by: string;
+  status: string;
+  result: any;
+  started_at: string | null;
+  completed_at: string | null;
+  created_at: string;
+}
+
+export interface FimEntry {
+  id: number;
+  file_path: string;
+  file_name: string;
+  status: string;
+  current_hash: string | null;
+  previous_hash: string | null;
+  file_size: number | null;
+  permissions: string | null;
+  owner: string | null;
+  last_checked: string | null;
+  last_changed: string | null;
+  change_count: number;
+  is_critical: boolean;
+}
+
 export type Severity = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' | 'INFO';

@@ -12,6 +12,10 @@ from app.models.notification import Notification
 from app.models.setting import Setting
 from app.models.api_key import ApiKey
 from app.models.network import Device
+from app.models.siem import SiemLog
+from app.models.edr import EdrProcess
+from app.models.soar import Playbook, PlaybookAction, PlaybookExecution
+from app.models.fim import FimEntry
 
 __all__ = [
     "User",
@@ -30,4 +34,10 @@ __all__ = [
     "Setting",
     "ApiKey",
     "Device",
+    "SiemLog",
+    "EdrProcess",
+    "Playbook",
+    "PlaybookAction",
+    "PlaybookExecution",
+    "FimEntry",
 ]

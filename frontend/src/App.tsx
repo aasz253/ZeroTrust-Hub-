@@ -26,6 +26,11 @@ import UserManagement from './pages/UserManagement';
 import AuditLogs from './pages/AuditLogs';
 import Settings from './pages/Settings';
 import Profile from './pages/Profile';
+import MFASetup from './pages/MFASetup';
+import SIEMLogs from './pages/SIEMLogs';
+import EDRProcesses from './pages/EDRProcesses';
+import SOARPlaybooks from './pages/SOARPlaybooks';
+import FIMMonitor from './pages/FIMMonitor';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
@@ -74,6 +79,11 @@ function AppContent() {
         <Route path="reports" element={<Reports />} />
         <Route path="notifications" element={<Notifications />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="mfa" element={<MFASetup />} />
+        <Route path="siem" element={<SIEMLogs />} />
+        <Route path="edr" element={<EDRProcesses />} />
+        <Route path="soar" element={<SOARPlaybooks />} />
+        <Route path="fim" element={<FIMMonitor />} />
 
         <Route path="admin/users" element={<ProtectedRoute requiredRole="admin"><UserManagement /></ProtectedRoute>} />
         <Route path="admin/audit-logs" element={<ProtectedRoute requiredRole="admin"><AuditLogs /></ProtectedRoute>} />

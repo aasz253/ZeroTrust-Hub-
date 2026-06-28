@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Shield, Activity, Search, AlertTriangle, Bug, Key, MessageSquare, FileText, Bell, Settings, Users, LayoutDashboard, Radio, FileSearch, Wifi, X } from 'lucide-react';
+import { Shield, Activity, Search, AlertTriangle, Bug, Key, MessageSquare, FileText, Bell, Settings, Users, LayoutDashboard, Radio, FileSearch, Wifi, X, Lock, Terminal, Cpu, Puzzle, FileCheck } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { useUIStore } from '../../store/uiStore';
 
@@ -15,6 +15,11 @@ const navItems = [
   { to: '/dashboard/ai-assistant', icon: MessageSquare, label: 'AI Assistant' },
   { to: '/dashboard/reports', icon: FileText, label: 'Reports' },
   { to: '/dashboard/notifications', icon: Bell, label: 'Notifications' },
+  { to: '/dashboard/mfa', icon: Lock, label: 'MFA Setup' },
+  { to: '/dashboard/siem', icon: Terminal, label: 'SIEM Logs' },
+  { to: '/dashboard/edr', icon: Cpu, label: 'EDR Monitor' },
+  { to: '/dashboard/soar', icon: Puzzle, label: 'SOAR Playbooks' },
+  { to: '/dashboard/fim', icon: FileCheck, label: 'File Monitor' },
 ];
 
 const adminItems = [

@@ -78,10 +78,20 @@ from app.routers import audit_logs as audit_router_mod
 from app.routers import api_keys as apikey_router_mod
 from app.routers import network as network_router_mod
 from app.routers import wifi as wifi_router_mod
+from app.routers import mfa as mfa_router_mod
+from app.routers import siem as siem_router_mod
+from app.routers import edr as edr_router_mod
+from app.routers import soar as soar_router_mod
+from app.routers import fim as fim_router_mod
 
 app.include_router(auth_router_mod.router)
+app.include_router(mfa_router_mod.router)
 app.include_router(network_router_mod.router)
 app.include_router(wifi_router_mod.router)
+app.include_router(siem_router_mod.router)
+app.include_router(edr_router_mod.router)
+app.include_router(soar_router_mod.router)
+app.include_router(fim_router_mod.router)
 app.include_router(user_router_mod.router)
 app.include_router(dash_router_mod.router)
 app.include_router(vuln_router_mod.router)

@@ -16,6 +16,11 @@ import type {
   PaginatedResponse,
   Device,
   NetworkStats,
+  SiemLog,
+  EdrProcess,
+  Playbook,
+  PlaybookExecution,
+  FimEntry,
 } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -167,6 +172,47 @@ export const network = {
 export const auditLogs = {
   list: (params?: { page?: number; action?: string }) =>
     api.get('/audit-logs', { params }).then(r => r.data),
+};
+
+// MFA
+export const mfa = {
+  setup: () => api.post('/auth/mfa/setup').then(r => r.data),
+  verifySetup: (code: string) => api.post('/auth/mfa/verify-setup', { code }).then(r => r.data),
+  verify: (code: string) => api.post('/auth/mfa/verify', { code }).then(r => r.data),
+  disable: () => api.post('/auth/mfa/disable').then(r => r.data),
+  status: () => api.get('/auth/mfa/status').then(r => r.data),
+};
+
+// SIEM
+export const siem = {
+  logs: (params?: any) => api.get<PaginatedResponse<SiemLog>>('/siem/logs', { params }).then(r => r.data),
+  get: (id: number) => api.get<SiemLog>(`/siem/logs/${id}`).then(r => r.data),
+  stats: () => api.get('/siem/stats').then(r => r.data),
+};
+
+// EDR
+export const edr = {
+  processes: (params?: { suspicious_only?: boolean; search?: string }) =>
+    api.get('/edr/processes', { params }).then(r => r.data),
+  get: (pid: number) => api.get(`/edr/processes/${pid}`).then(r => r.data),
+  stats: () => api.get('/edr/stats').then(r => r.data),
+};
+
+// SOAR
+export const soar = {
+  playbooks: () => api.get('/soar/playbooks').then(r => r.data),
+  create: (data: any) => api.post('/soar/playbooks', data).then(r => r.data),
+  toggle: (id: number) => api.post(`/soar/playbooks/${id}/toggle`).then(r => r.data),
+  delete: (id: number) => api.delete(`/soar/playbooks/${id}`).then(r => r.data),
+  executions: (params?: any) => api.get('/soar/executions', { params }).then(r => r.data),
+};
+
+// FIM
+export const fim = {
+  entries: (params?: any) => api.get('/fim/entries', { params }).then(r => r.data),
+  scan: () => api.post('/fim/scan').then(r => r.data),
+  add: (file_path: string) => api.post('/fim/add', { file_path }).then(r => r.data),
+  stats: () => api.get('/fim/stats').then(r => r.data),
 };
 
 export default api;
