@@ -1,15 +1,31 @@
-import { Server, Monitor, Activity, Globe, Wifi, Shield } from 'lucide-react';
-
-const mockHosts = [
-  { ip: '10.0.1.1', name: 'Gateway', status: 'online', ports: [80, 443, 22], os: 'Linux' },
-  { ip: '10.0.1.10', name: 'Web Server', status: 'online', ports: [80, 443], os: 'Ubuntu 22.04' },
-  { ip: '10.0.1.20', name: 'Database', status: 'online', ports: [5432, 22], os: 'Debian 12' },
-  { ip: '10.0.1.30', name: 'Mail Server', status: 'online', ports: [25, 587, 993], os: 'CentOS 9' },
-  { ip: '10.0.1.50', name: 'Dev Workstation', status: 'offline', ports: [22], os: 'Windows 11' },
-  { ip: '192.168.1.100', name: 'Unknown Device', status: 'suspicious', ports: [22, 3389, 445], os: 'Unknown' },
-];
+import { useEffect, useState } from 'react';
+import { Server, Monitor, Activity, Globe, Shield } from 'lucide-react';
+import { network } from '../services/api';
+import type { Device, NetworkStats } from '../types';
 
 export default function NetworkMonitor() {
+  const [stats, setStats] = useState<NetworkStats | null>(null);
+  const [devices, setDevices] = useState<Device[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      network.stats(),
+      network.devices(),
+    ]).then(([s, d]) => {
+      setStats(s);
+      setDevices(d.items);
+    }).catch(console.error).finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyber-accent" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -17,12 +33,12 @@ export default function NetworkMonitor() {
         <p className="text-gray-500 mt-1">Real-time network monitoring and device inventory</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Active Hosts', value: '42', icon: Monitor, color: 'text-cyber-success' },
-          { label: 'Open Ports', value: '1,247', icon: Activity, color: 'text-cyber-accent' },
-          { label: 'Suspicious IPs', value: '3', icon: Shield, color: 'text-cyber-danger' },
-          { label: 'Live Connections', value: '156', icon: Globe, color: 'text-cyber-warning' },
+          { label: 'Active Hosts', value: stats?.online_count ?? 0, icon: Monitor, color: 'text-cyber-success' },
+          { label: 'Open Ports', value: stats?.open_ports_total ?? 0, icon: Activity, color: 'text-cyber-accent' },
+          { label: 'Suspicious IPs', value: stats?.suspicious_count ?? 0, icon: Shield, color: 'text-cyber-danger' },
+          { label: 'Total Devices', value: stats?.total_devices ?? 0, icon: Globe, color: 'text-cyber-warning' },
         ].map((stat) => (
           <div key={stat.label} className="stat-card">
             <div className="flex items-start justify-between">
@@ -52,36 +68,38 @@ export default function NetworkMonitor() {
               </tr>
             </thead>
             <tbody>
-              {mockHosts.map((host) => (
-                <tr key={host.ip} className="border-b border-gray-800/30 hover:bg-gray-800/20 transition-colors">
+              {devices.map((device) => (
+                <tr key={device.id} className="border-b border-gray-800/30 hover:bg-gray-800/20 transition-colors">
                   <td className="p-4">
                     <div className="flex items-center gap-2">
                       <Server className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm text-gray-200">{host.name}</span>
+                      <span className="text-sm text-gray-200">{device.hostname || device.ip_address}</span>
                     </div>
                   </td>
                   <td className="p-4">
-                    <span className="text-sm font-mono text-gray-400">{host.ip}</span>
+                    <span className="text-sm font-mono text-gray-400">{device.ip_address}</span>
                   </td>
                   <td className="p-4">
                     <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                      host.status === 'online' ? 'text-green-400 bg-green-500/10 border border-green-500/20' :
-                      host.status === 'suspicious' ? 'text-red-400 bg-red-500/10 border border-red-500/20' :
+                      device.status === 'online' ? 'text-green-400 bg-green-500/10 border border-green-500/20' :
+                      device.status === 'suspicious' ? 'text-red-400 bg-red-500/10 border border-red-500/20' :
                       'text-gray-500 bg-gray-500/10 border border-gray-500/20'
                     }`}>
-                      {host.status}
+                      {device.status}
                     </span>
                   </td>
                   <td className="p-4">
                     <div className="flex gap-1 flex-wrap">
-                      {host.ports.map((port) => (
+                      {(device.open_ports || []).map((port) => (
                         <span key={port} className="px-1.5 py-0.5 rounded text-xs bg-gray-800 text-gray-400 font-mono">
                           {port}
                         </span>
                       ))}
                     </div>
                   </td>
-                  <td className="p-4 text-sm text-gray-400">{host.os}</td>
+                  <td className="p-4 text-sm text-gray-400">
+                    {[device.os, device.os_version].filter(Boolean).join(' ') || 'Unknown'}
+                  </td>
                 </tr>
               ))}
             </tbody>

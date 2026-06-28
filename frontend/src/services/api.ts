@@ -14,6 +14,8 @@ import type {
   ReportDetail,
   Notification,
   PaginatedResponse,
+  Device,
+  NetworkStats,
 } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -151,6 +153,14 @@ export const users = {
 export const settings = {
   get: () => api.get('/settings').then(r => r.data),
   update: (key: string, value: string) => api.put(`/settings/${key}`, { value }),
+};
+
+// Network
+export const network = {
+  devices: (params?: { page?: number; status?: string }) =>
+    api.get<PaginatedResponse<Device>>('/network/devices', { params }).then(r => r.data),
+  stats: () =>
+    api.get<NetworkStats>('/network/stats').then(r => r.data),
 };
 
 // Audit Logs (admin)

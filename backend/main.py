@@ -107,8 +107,10 @@ from app.routers import settings as settings_router_mod
 from app.routers import users as user_router_mod
 from app.routers import audit_logs as audit_router_mod
 from app.routers import api_keys as apikey_router_mod
+from app.routers import network as network_router_mod
 
 app.include_router(auth_router_mod.router)
+app.include_router(network_router_mod.router)
 app.include_router(user_router_mod.router)
 app.include_router(dash_router_mod.router)
 app.include_router(vuln_router_mod.router)
@@ -131,6 +133,7 @@ def force_seed():
     from app.models.setting import Setting
     from app.models.threat import Threat
     from app.models.vulnerability import Vulnerability
+    from app.models.network import Device
     from app.core.security import hash_password
     from datetime import datetime, timedelta, timezone
     import random
@@ -184,8 +187,24 @@ def force_seed():
                     published_date=datetime.now(timezone.utc) - timedelta(days=random.randint(1, 90)),
                 ))
 
+        device_data = [
+            ("10.0.1.1", "Gateway", "online", [80, 443, 22], "Linux", "Ubuntu 22.04", 1.0),
+            ("10.0.1.10", "Web Server", "online", [80, 443], "Linux", "Ubuntu 22.04", 1.0),
+            ("10.0.1.20", "Database", "online", [5432, 22], "Linux", "Debian 12", 1.0),
+            ("10.0.1.30", "Mail Server", "online", [25, 587, 993], "Linux", "CentOS 9", 1.0),
+            ("10.0.1.50", "Dev Workstation", "offline", [22], "Windows", "Windows 11", 1.0),
+            ("192.168.1.100", "Unknown Device", "suspicious", [22, 3389, 445], "Unknown", "", 7.5),
+        ]
+        for ip, hostname, status, ports, os_name, os_ver, risk in device_data:
+            if not db.query(Device).filter(Device.ip_address == ip).first():
+                db.add(Device(
+                    ip_address=ip, hostname=hostname, status=status,
+                    open_ports=ports, os=os_name, os_version=os_ver,
+                    risk_score=risk, last_seen=datetime.now(timezone.utc),
+                ))
+
         db.commit()
-        return {"detail": f"Seeded {len(threat_data)} threats and {len(vuln_data)} vulnerabilities"}
+        return {"detail": f"Seeded {len(threat_data)} threats, {len(vuln_data)} vulnerabilities, {len(device_data)} devices"}
     except Exception as e:
         db.rollback()
         return {"error": str(e)}

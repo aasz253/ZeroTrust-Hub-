@@ -5,6 +5,7 @@ from app.models.user import User
 from app.models.setting import Setting
 from app.models.threat import Threat
 from app.models.vulnerability import Vulnerability
+from app.models.network import Device
 from app.core.security import hash_password
 from datetime import datetime, timedelta, timezone
 import random
@@ -160,6 +161,23 @@ def seed_database():
                 remediation=f"Apply the latest security patch from {vendor}",
             )
             db.add(vuln)
+
+        device_data = [
+            ("10.0.1.1", "Gateway", "online", [80, 443, 22], "Linux", "Ubuntu 22.04"),
+            ("10.0.1.10", "Web Server", "online", [80, 443], "Linux", "Ubuntu 22.04"),
+            ("10.0.1.20", "Database", "online", [5432, 22], "Linux", "Debian 12"),
+            ("10.0.1.30", "Mail Server", "online", [25, 587, 993], "Linux", "CentOS 9"),
+            ("10.0.1.50", "Dev Workstation", "offline", [22], "Windows", "Windows 11"),
+            ("192.168.1.100", "Unknown Device", "suspicious", [22, 3389, 445], "Unknown", ""),
+        ]
+        for ip, hostname, status, ports, os_name, os_ver in device_data:
+            if not db.query(Device).filter(Device.ip_address == ip).first():
+                db.add(Device(
+                    ip_address=ip, hostname=hostname, status=status,
+                    open_ports=ports, os=os_name, os_version=os_ver,
+                    risk_score=7.5 if status == "suspicious" else 1.0,
+                    last_seen=datetime.now(timezone.utc),
+                ))
 
         settings_data = [
             ("ai_provider", "openai", "string", "ai", "AI provider configuration"),

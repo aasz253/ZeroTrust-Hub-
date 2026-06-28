@@ -171,4 +171,33 @@ export interface PaginatedResponse<T> {
   pages: number;
 }
 
+export interface Device {
+  id: number;
+  ip_address: string;
+  hostname: string | null;
+  mac_address: string | null;
+  status: string;
+  open_ports: number[];
+  os: string | null;
+  os_version: string | null;
+  vendor: string | null;
+  device_type: string | null;
+  risk_score: number;
+  first_seen: string | null;
+  last_seen: string | null;
+  is_active: boolean;
+  tags: string[];
+  notes: string | null;
+  created_at: string;
+}
+
+export interface NetworkStats {
+  total_devices: number;
+  online_count: number;
+  offline_count: number;
+  suspicious_count: number;
+  open_ports_total: number;
+  risk_score_avg: number;
+}
+
 export type Severity = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' | 'INFO';

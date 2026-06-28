@@ -11,6 +11,7 @@ from app.models.report import Report
 from app.models.notification import Notification
 from app.models.setting import Setting
 from app.models.api_key import ApiKey
+from app.models.network import Device
 
 __all__ = [
     "User",
@@ -28,4 +29,5 @@ __all__ = [
     "Notification",
     "Setting",
     "ApiKey",
+    "Device",
 ]
