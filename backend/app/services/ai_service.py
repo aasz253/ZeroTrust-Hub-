@@ -8,8 +8,15 @@ import httpx
 class AIService:
     def __init__(self, db: Session):
         self.db = db
-        self.api_key = settings.OPENAI_API_KEY or settings.GEMINI_API_KEY
-        self.provider = "openai" if settings.OPENAI_API_KEY else "gemini"
+        if settings.OPENAI_API_KEY:
+            self.api_key = settings.OPENAI_API_KEY
+            self.provider = "openai"
+        elif settings.OPENROUTER_API_KEY:
+            self.api_key = settings.OPENROUTER_API_KEY
+            self.provider = "openrouter"
+        else:
+            self.api_key = settings.GEMINI_API_KEY
+            self.provider = "gemini" if settings.GEMINI_API_KEY else None
 
     async def chat(
         self, user_id: int, message: str, conversation_id: Optional[int] = None,
@@ -63,12 +70,14 @@ class AIService:
     async def _call_ai_api(self, message: str, history: list) -> dict:
         if self.provider == "openai":
             return await self._call_openai(message, history)
+        if self.provider == "openrouter":
+            return await self._call_openrouter(message, history)
         if self.provider == "gemini" and self.api_key:
             return await self._call_gemini(message, history)
         return self._fallback_response(message)
 
-    async def _call_openai(self, message: str, history: list) -> dict:
-        messages = [
+    def _build_messages(self, message: str, history: list) -> list:
+        msgs = [
             {
                 "role": "system",
                 "content": "You are ZeroTrust AI, a cybersecurity expert assistant. "
@@ -78,9 +87,11 @@ class AIService:
             }
         ]
         for msg in history[-10:]:
-            messages.append({"role": msg.role, "content": msg.content})
-        messages.append({"role": "user", "content": message})
+            msgs.append({"role": msg.role, "content": msg.content})
+        msgs.append({"role": "user", "content": message})
+        return msgs
 
+    async def _call_openai(self, message: str, history: list) -> dict:
         try:
             async with httpx.AsyncClient(timeout=60.0) as client:
                 resp = await client.post(
@@ -91,7 +102,32 @@ class AIService:
                     },
                     json={
                         "model": "gpt-4",
-                        "messages": messages,
+                        "messages": self._build_messages(message, history),
+                        "max_tokens": 2048,
+                    },
+                )
+                data = resp.json()
+                return {
+                    "response": data["choices"][0]["message"]["content"],
+                    "tokens_used": data.get("usage", {}).get("total_tokens"),
+                }
+        except Exception:
+            return self._fallback_response(message)
+
+    async def _call_openrouter(self, message: str, history: list) -> dict:
+        try:
+            async with httpx.AsyncClient(timeout=60.0) as client:
+                resp = await client.post(
+                    "https://openrouter.ai/api/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {self.api_key}",
+                        "Content-Type": "application/json",
+                        "HTTP-Referer": "https://zerotrust-hub.vercel.app",
+                        "X-Title": "ZeroTrust Hub",
+                    },
+                    json={
+                        "model": settings.OPENROUTER_MODEL,
+                        "messages": self._build_messages(message, history),
                         "max_tokens": 2048,
                     },
                 )
@@ -133,7 +169,7 @@ class AIService:
     def _fallback_response(self, message: str) -> dict:
         return {
             "response": "I'm operating in offline mode. I can provide general cybersecurity guidance. "
-            "For AI-powered analysis, please configure an OpenAI or Gemini API key in settings.\n\n"
+            "For AI-powered analysis, please configure an OpenAI, OpenRouter, or Gemini API key in settings.\n\n"
             f"Regarding your query about '{message[:100]}': As a ZeroTrust Hub security assistant, "
             "I recommend implementing defense-in-depth strategies, following the principle of least privilege, "
             "and maintaining regular security assessments. Please configure an AI provider API key for detailed analysis.",

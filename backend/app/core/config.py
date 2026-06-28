@@ -23,6 +23,8 @@ class Settings(BaseSettings):
 
     OPENAI_API_KEY: Optional[str] = None
     GEMINI_API_KEY: Optional[str] = None
+    OPENROUTER_API_KEY: Optional[str] = None
+    OPENROUTER_MODEL: str = "openai/gpt-4o"
     NVD_API_KEY: Optional[str] = None
     VIRUSTOTAL_API_KEY: Optional[str] = None
 

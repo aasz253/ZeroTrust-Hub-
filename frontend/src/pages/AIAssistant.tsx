@@ -57,29 +57,29 @@ export default function AIAssistant() {
   };
 
   return (
-    <div className="flex gap-6 h-[calc(100vh-8rem)]">
-      <div className="w-72 flex-shrink-0 glass p-4 overflow-y-auto scrollbar-thin">
+    <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 h-auto lg:h-[calc(100vh-8rem)]">
+      <div className="w-full lg:w-72 flex-shrink-0 glass p-4 overflow-y-auto scrollbar-thin">
         <button onClick={newChat} className="w-full btn-primary text-sm mb-4 flex items-center justify-center gap-2">
           <MessageSquare className="w-4 h-4" /> New Chat
         </button>
-        <div className="space-y-2">
+        <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0">
           {conversations.map((conv) => (
             <button
               key={conv.id}
               onClick={() => loadConversation(conv.id)}
-              className={`w-full text-left p-3 rounded-xl text-sm transition-colors ${
+              className={`flex-shrink-0 lg:w-full text-left p-3 rounded-xl text-sm transition-colors ${
                 activeConv === conv.id ? 'bg-cyber-accent/10 border border-cyber-accent/20' : 'hover:bg-gray-800/50'
               }`}
             >
-              <p className="text-gray-300 truncate">{conv.title || 'New conversation'}</p>
-              <p className="text-xs text-gray-600 mt-1">{new Date(conv.created_at).toLocaleDateString()}</p>
+              <p className="text-gray-300 truncate max-w-[120px] lg:max-w-none">{conv.title || 'New conversation'}</p>
+              <p className="text-xs text-gray-600 mt-1 hidden lg:block">{new Date(conv.created_at).toLocaleDateString()}</p>
             </button>
           ))}
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col glass">
-        <div className="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-thin">
+      <div className="flex-1 flex flex-col glass min-h-[60vh] lg:min-h-0">
+        <div className="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4 scrollbar-thin">
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <Bot className="w-16 h-16 text-cyber-accent/30 mb-4" />
