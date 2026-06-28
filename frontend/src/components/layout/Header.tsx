@@ -39,7 +39,7 @@ export default function Header() {
 
         <div className="flex items-center gap-4">
           <button
-            onClick={() => navigate('/notifications')}
+            onClick={() => navigate('/dashboard/notifications')}
             className="relative p-2 rounded-xl hover:bg-gray-800/50 transition-colors"
           >
             <Bell className="w-5 h-5 text-gray-400" />
@@ -51,13 +51,13 @@ export default function Header() {
           </button>
 
           <div className="flex items-center gap-3 pl-4 border-l border-gray-800/50">
-            <div className="text-right">
+            <button onClick={() => navigate('/dashboard/profile')} className="text-right hover:opacity-80">
               <p className="text-sm font-medium text-gray-200">{user?.full_name || user?.username}</p>
               <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
-            </div>
-            <div className="w-9 h-9 rounded-xl bg-cyber-secondary/20 border border-cyber-secondary/30 flex items-center justify-center">
+            </button>
+            <button onClick={() => navigate('/dashboard/profile')} className="w-9 h-9 rounded-xl bg-cyber-secondary/20 border border-cyber-secondary/30 flex items-center justify-center hover:bg-cyber-secondary/30 transition-colors">
               <User className="w-4 h-4 text-cyber-secondary" />
-            </div>
+            </button>
             <button
               onClick={handleLogout}
               className="p-2 rounded-xl hover:bg-gray-800/50 transition-colors text-gray-500 hover:text-cyber-danger"

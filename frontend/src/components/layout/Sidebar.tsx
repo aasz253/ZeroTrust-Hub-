@@ -8,21 +8,21 @@ import { useAuthStore } from '../../store/authStore';
 
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/threats', icon: AlertTriangle, label: 'Threat Intelligence' },
-  { to: '/network', icon: Radio, label: 'Network Monitor' },
-  { to: '/scanner', icon: Search, label: 'Vulnerability Scanner' },
-  { to: '/cves', icon: Bug, label: 'CVE Explorer' },
-  { to: '/malware', icon: FileSearch, label: 'Malware Scanner' },
-  { to: '/password', icon: Key, label: 'Password Analyzer' },
-  { to: '/ai-assistant', icon: MessageSquare, label: 'AI Assistant' },
-  { to: '/reports', icon: FileText, label: 'Reports' },
-  { to: '/notifications', icon: Bell, label: 'Notifications' },
+  { to: '/dashboard/threats', icon: AlertTriangle, label: 'Threat Intelligence' },
+  { to: '/dashboard/network', icon: Radio, label: 'Network Monitor' },
+  { to: '/dashboard/scanner', icon: Search, label: 'Vulnerability Scanner' },
+  { to: '/dashboard/cves', icon: Bug, label: 'CVE Explorer' },
+  { to: '/dashboard/malware', icon: FileSearch, label: 'Malware Scanner' },
+  { to: '/dashboard/password', icon: Key, label: 'Password Analyzer' },
+  { to: '/dashboard/ai-assistant', icon: MessageSquare, label: 'AI Assistant' },
+  { to: '/dashboard/reports', icon: FileText, label: 'Reports' },
+  { to: '/dashboard/notifications', icon: Bell, label: 'Notifications' },
 ];
 
 const adminItems = [
-  { to: '/admin/users', icon: Users, label: 'User Management' },
-  { to: '/admin/audit-logs', icon: Activity, label: 'Audit Logs' },
-  { to: '/admin/settings', icon: Settings, label: 'Settings' },
+  { to: '/dashboard/admin/users', icon: Users, label: 'User Management' },
+  { to: '/dashboard/admin/audit-logs', icon: Activity, label: 'Audit Logs' },
+  { to: '/dashboard/admin/settings', icon: Settings, label: 'Settings' },
 ];
 
 export default function Sidebar() {
