@@ -119,7 +119,7 @@ export const reports = {
 
 // Notifications
 export const notifications = {
-  list: (params?: { is_read?: boolean; page?: number }) =>
+  list: (params?: { is_read?: boolean; page?: number; page_size?: number }) =>
     api.get('/notifications', { params }).then(r => r.data),
   markRead: (id: number) =>
     api.patch(`/notifications/${id}`, { is_read: true }),
