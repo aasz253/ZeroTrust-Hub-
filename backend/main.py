@@ -128,6 +128,33 @@ def health_check():
     return {"status": "healthy", "version": settings.VERSION, "app": settings.APP_NAME}
 
 
+@app.get("/api/debug/db-check")
+def db_check():
+    from sqlalchemy import text
+    try:
+        with engine.connect() as conn:
+            result = conn.execute(text("SELECT 1")).fetchone()
+            return {"db": "connected", "result": result[0]}
+    except Exception as e:
+        return {"db": "error", "detail": str(e)}
+
+
+@app.get("/api/debug/seed-check")
+def seed_check():
+    from app.database.session import SessionLocal
+    db = SessionLocal()
+    try:
+        from app.models.role import Role
+        from app.models.user import User
+        roles = db.query(Role).count()
+        users = db.query(User).count()
+        return {"roles": roles, "users": users}
+    except Exception as e:
+        return {"error": str(e)}
+    finally:
+        db.close()
+
+
 @app.websocket("/ws/{token}")
 async def websocket_endpoint(websocket: WebSocket, token: str):
     try:
