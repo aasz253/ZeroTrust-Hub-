@@ -96,7 +96,7 @@ export default function Landing() {
         </section>
 
         <footer className="border-t border-gray-800/50 py-8 text-center text-sm text-gray-600">
-          ZeroTrust Hub &copy; {new Date().getFullYear()}. All rights reserved.
+          ZeroTrust Hub &copy; {new Date().getFullYear()} Sifuna Codex Company. All rights reserved.
         </footer>
       </main>
     </div>
