@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-cyber-bg text-gray-100 font-['Inter'] antialiased;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-cyber-card/80 backdrop-blur-xl border border-gray-800/50 rounded-2xl;
+  }
+
+  .glass-hover {
+    @apply hover:bg-cyber-card/90 hover:border-gray-700/50 transition-all duration-300;
+  }
+
+  .card-gradient {
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(17, 24, 39, 0.6));
+    backdrop-filter: blur(20px);
+    @apply border border-gray-800/50 rounded-2xl;
+  }
+
+  .neon-border {
+    box-shadow: 0 0 15px rgba(0, 245, 255, 0.1), inset 0 0 15px rgba(0, 245, 255, 0.05);
+    @apply border border-cyber-accent/20;
+  }
+
+  .neon-glow {
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.2), 0 0 40px rgba(0, 245, 255, 0.1);
+  }
+
+  .gradient-border {
+    position: relative;
+    border-radius: 1rem;
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, rgba(0, 245, 255, 0.3), rgba(124, 58, 237, 0.3));
+    z-index: -1;
+    opacity: 0.5;
+  }
+
+  .btn-primary {
+    @apply px-6 py-2.5 bg-cyber-accent/20 text-cyber-accent border border-cyber-accent/30 rounded-xl
+    hover:bg-cyber-accent/30 hover:shadow-lg hover:shadow-cyber-accent/10 transition-all duration-300
+    font-medium;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-2.5 bg-cyber-secondary/20 text-cyber-secondary border border-cyber-secondary/30 rounded-xl
+    hover:bg-cyber-secondary/30 transition-all duration-300 font-medium;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 bg-gray-900/60 border border-gray-700/50 rounded-xl text-white
+    placeholder-gray-500 focus:outline-none focus:border-cyber-accent/50 focus:ring-1 focus:ring-cyber-accent/20
+    transition-all duration-300;
+  }
+
+  .stat-card {
+    @apply relative overflow-hidden card-gradient p-6;
+  }
+
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent, #00F5FF), transparent);
+    opacity: 0.5;
+  }
+
+  .severity-critical { @apply text-red-400 bg-red-500/10 border border-red-500/20; }
+  .severity-high { @apply text-orange-400 bg-orange-500/10 border border-orange-500/20; }
+  .severity-medium { @apply text-yellow-400 bg-yellow-500/10 border border-yellow-500/20; }
+  .severity-low { @apply text-green-400 bg-green-500/10 border border-green-500/20; }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 245, 255, 0.2) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(0, 245, 255, 0.2);
+    border-radius: 2px;
+  }
+}
