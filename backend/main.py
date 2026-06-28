@@ -123,6 +123,76 @@ app.include_router(audit_router_mod.router)
 app.include_router(apikey_router_mod.router)
 
 
+@app.post("/api/debug/seed-data")
+def force_seed():
+    from app.database.session import SessionLocal
+    from app.models.role import Role, Permission
+    from app.models.user import User
+    from app.models.setting import Setting
+    from app.models.threat import Threat
+    from app.models.vulnerability import Vulnerability
+    from app.core.security import hash_password
+    from datetime import datetime, timedelta, timezone
+    import random
+
+    db = SessionLocal()
+    try:
+        threat_data = [
+            ("185.220.101.1", "IP Address", "C2 Server Communication", "CRITICAL"),
+            ("malware-domain.com", "Domain", "Malware Distribution", "HIGH"),
+            ("45.33.32.156", "IP Address", "SSH Brute Force", "HIGH"),
+            ("phishing-bank.com", "Domain", "Phishing Campaign", "CRITICAL"),
+            ("192.168.1.100", "IP Address", "Port Scanning", "LOW"),
+            ("botnet-c2.example.com", "Domain", "Botnet C2", "HIGH"),
+            ("10.0.0.50", "IP Address", "DNS Tunneling", "MEDIUM"),
+            ("ransomware-sample.exe", "Hash", "Ransomware", "CRITICAL"),
+            ("trojan-downloader.exe", "Hash", "Trojan Downloader", "MEDIUM"),
+            ("evil.com", "Domain", "Malicious Domain", "HIGH"),
+        ]
+        sources = ["AlienVault", "AbuseIPDB", "VirusTotal", "MISP"]
+
+        for indicator, ioc_type, desc, sev in threat_data:
+            if not db.query(Threat).filter(Threat.indicator == indicator).first():
+                db.add(Threat(
+                    indicator=indicator, indicator_type=ioc_type,
+                    threat_type=desc, severity=sev,
+                    confidence=random.uniform(0.6, 1.0),
+                    source=random.choice(sources),
+                    is_active=True,
+                    first_seen=datetime.now(timezone.utc) - timedelta(days=random.randint(1, 30)),
+                    last_seen=datetime.now(timezone.utc) - timedelta(hours=random.randint(1, 48)),
+                ))
+
+        vuln_data = [
+            ("CVE-2024-21626", "runc container breakout", "CRITICAL", 9.8, "runc", "Apply latest patch"),
+            ("CVE-2024-3094", "XZ Utils backdoor", "CRITICAL", 10.0, "Tukaani", "Update to patched version"),
+            ("CVE-2024-6387", "OpenSSH regreSSHion", "HIGH", 8.1, "OpenBSD", "Update OpenSSH"),
+            ("CVE-2024-4577", "PHP CGI argument injection", "CRITICAL", 9.8, "PHP", "Apply PHP patch"),
+            ("CVE-2024-38077", "Windows RDL exploit", "CRITICAL", 9.8, "Microsoft", "Apply security update"),
+            ("CVE-2024-31497", "PuTTY key recovery", "HIGH", 7.5, "PuTTY", "Update PuTTY"),
+            ("CVE-2024-1709", "ScreenConnect auth bypass", "CRITICAL", 10.0, "ConnectWise", "Update immediately"),
+            ("CVE-2024-22252", "VMware ESXi escape", "CRITICAL", 9.8, "VMware", "Apply VMware patch"),
+            ("CVE-2024-28995", "SolarWinds path traversal", "HIGH", 7.5, "SolarWinds", "Apply patch"),
+            ("CVE-2024-27198", "TeamCity auth bypass", "CRITICAL", 9.8, "JetBrains", "Update TeamCity"),
+        ]
+        for cve_id, title, sev, score, vendor, remediation in vuln_data:
+            if not db.query(Vulnerability).filter(Vulnerability.cve_id == cve_id).first():
+                db.add(Vulnerability(
+                    cve_id=cve_id, title=title, severity=sev, cvss_score=score,
+                    affected_vendor=vendor, remediation=remediation,
+                    description=f"Security vulnerability in {vendor}",
+                    published_date=datetime.now(timezone.utc) - timedelta(days=random.randint(1, 90)),
+                ))
+
+        db.commit()
+        return {"detail": f"Seeded {len(threat_data)} threats and {len(vuln_data)} vulnerabilities"}
+    except Exception as e:
+        db.rollback()
+        return {"error": str(e)}
+    finally:
+        db.close()
+
+
 @app.post("/api/debug/fix-admin")
 def fix_admin():
     from app.database.session import SessionLocal

@@ -13,7 +13,7 @@ import random
 def seed_database():
     db = SessionLocal()
     try:
-        if db.query(Role).count() > 0:
+        if db.query(Role).count() > 0 and db.query(Threat).count() > 0:
             return
 
         permissions_data = [
