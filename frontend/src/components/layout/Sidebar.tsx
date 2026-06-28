@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Shield, Activity, Search, AlertTriangle, Bug, Key, MessageSquare, FileText, Bell, Settings, Users, LayoutDashboard, Radio, FileSearch, X } from 'lucide-react';
+import { Shield, Activity, Search, AlertTriangle, Bug, Key, MessageSquare, FileText, Bell, Settings, Users, LayoutDashboard, Radio, FileSearch, Wifi, X } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { useUIStore } from '../../store/uiStore';
 
@@ -7,6 +7,7 @@ const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/dashboard/threats', icon: AlertTriangle, label: 'Threat Intelligence' },
   { to: '/dashboard/network', icon: Radio, label: 'Network Monitor' },
+  { to: '/dashboard/wifi', icon: Wifi, label: 'WiFi Networks' },
   { to: '/dashboard/scanner', icon: Search, label: 'Vulnerability Scanner' },
   { to: '/dashboard/cves', icon: Bug, label: 'CVE Explorer' },
   { to: '/dashboard/malware', icon: FileSearch, label: 'Malware Scanner' },

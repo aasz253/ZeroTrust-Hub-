@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 from app.database.session import get_db
 from app.schemas.auth import (
@@ -10,24 +10,23 @@ from app.schemas.auth import (
     UserResponse,
 )
 from app.services.auth_service import AuthService
-from app.core.security import get_current_user
+from app.core.security import get_current_user, hash_password, verify_password
 from app.models.user import User
+from fastapi import HTTPException, status
 
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
 
 
 @router.post("/login", response_model=dict)
-def login(request: LoginRequest, db: Session = Depends(get_db)):
-    service = AuthService(db)
-    return service.login(request.email, request.password)
+def login(request: Request, body: LoginRequest, db: Session = Depends(get_db)):
+    service = AuthService(db, request)
+    return service.login(body.email, body.password)
 
 
 @router.post("/register", response_model=dict)
-def register(request: RegisterRequest, db: Session = Depends(get_db)):
-    service = AuthService(db)
-    return service.register(
-        request.email, request.username, request.password, request.full_name
-    )
+def register(request: Request, body: RegisterRequest, db: Session = Depends(get_db)):
+    service = AuthService(db, request)
+    return service.register(body.email, body.username, body.password, body.full_name)
 
 
 @router.post("/refresh", response_model=dict)
@@ -58,13 +57,15 @@ def change_password(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    from app.core.security import verify_password, hash_password
-
     if not verify_password(request.current_password, current_user.hashed_password):
-        from fastapi import HTTPException, status
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Current password is incorrect",
+        )
+    if len(request.new_password) < 8:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New password must be at least 8 characters",
         )
     current_user.hashed_password = hash_password(request.new_password)
     db.commit()

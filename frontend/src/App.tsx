@@ -14,6 +14,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard';
 import Threats from './pages/Threats';
 import NetworkMonitor from './pages/NetworkMonitor';
+import WiFiNetworks from './pages/WiFiNetworks';
 import VulnerabilityScanner from './pages/VulnerabilityScanner';
 import CVEs from './pages/CVEs';
 import MalwareScanner from './pages/MalwareScanner';
@@ -64,6 +65,7 @@ function AppContent() {
         <Route index element={<Dashboard />} />
         <Route path="threats" element={<Threats />} />
         <Route path="network" element={<NetworkMonitor />} />
+        <Route path="wifi" element={<WiFiNetworks />} />
         <Route path="scanner" element={<VulnerabilityScanner />} />
         <Route path="cves" element={<CVEs />} />
         <Route path="malware" element={<MalwareScanner />} />

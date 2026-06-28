@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from app.core.config import settings
 from app.middleware.cors import setup_cors
-from app.middleware.rate_limit import rate_limit_middleware
+from app.middleware.security import security_middleware
 from app.database.session import engine, Base
 from app.websocket_manager import ws_manager
 from app.seed_data import seed_database
@@ -45,8 +45,8 @@ setup_cors(app)
 
 CORS_HEADERS = {
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "*",
-    "Access-Control-Allow-Headers": "*",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Authorization, Content-Type, X-Requested-With, Origin, Accept",
 }
 
 
@@ -60,38 +60,7 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 
-@app.middleware("http")
-async def cors_error_middleware(request: Request, call_next):
-    try:
-        response = await call_next(request)
-        response.headers["Access-Control-Allow-Origin"] = "*"
-        response.headers["Access-Control-Allow-Methods"] = "*"
-        response.headers["Access-Control-Allow-Headers"] = "*"
-        return response
-    except Exception as e:
-        logger.error(f"Request failed: {e}")
-        return JSONResponse(
-            status_code=500,
-            content={"detail": "Internal server error"},
-            headers=CORS_HEADERS,
-        )
-
-
-SECURE_HEADERS = {
-    "X-Content-Type-Options": "nosniff",
-    "X-Frame-Options": "DENY",
-    "X-XSS-Protection": "1; mode=block",
-    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
-    "Referrer-Policy": "strict-origin-when-cross-origin",
-}
-
-
-@app.middleware("http")
-async def add_secure_headers(request: Request, call_next):
-    response = await call_next(request)
-    for header, value in SECURE_HEADERS.items():
-        response.headers[header] = value
-    return response
+app.middleware("http")(security_middleware)
 
 
 from app.routers import auth as auth_router_mod
@@ -108,9 +77,11 @@ from app.routers import users as user_router_mod
 from app.routers import audit_logs as audit_router_mod
 from app.routers import api_keys as apikey_router_mod
 from app.routers import network as network_router_mod
+from app.routers import wifi as wifi_router_mod
 
 app.include_router(auth_router_mod.router)
 app.include_router(network_router_mod.router)
+app.include_router(wifi_router_mod.router)
 app.include_router(user_router_mod.router)
 app.include_router(dash_router_mod.router)
 app.include_router(vuln_router_mod.router)
